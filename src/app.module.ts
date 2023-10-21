@@ -3,6 +3,7 @@ import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AppConfig } from './app.config';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { Role } from './user/entities/role.entity';
@@ -38,6 +39,6 @@ import { Role } from './user/entities/role.entity';
     UserModule
     ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppConfig],
 })
 export class AppModule {}

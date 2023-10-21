@@ -1,5 +1,4 @@
 
-import { ConfigService } from '@nestjs/config';
 import {
   CreateDateColumn,
   DeleteDateColumn,
@@ -8,7 +7,7 @@ import {
 } from 'typeorm';
 
 export class BaseEntity {
-  constructor(readonly configService: ConfigService) {};
+
   @PrimaryGeneratedColumn()
   id: number;
   @CreateDateColumn({ name: 'created_at' }) created_at: Date;

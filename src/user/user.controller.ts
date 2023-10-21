@@ -1,40 +1,62 @@
-import { Controller, Get, Post, Body, Res, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Patch, Param, Delete, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Serialize } from '@src/interceptors/serializer.interceptor';
-import { UserDto } from './dto/user.dto';
-import { APIResponse } from '@src/shared/interfaces/api.respone';
+import { IAPIResponse } from '@src/shared/interfaces/api.respone';
+import { LoginUserDto } from './dto/login.dto';
+
+
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  apiRes: APIResponse;
+  apiRes: IAPIResponse;
 
   @Post('/signup')
-  @Serialize(UserDto)
+  @Serialize(CreateUserDto)
   async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     try {
-      const newUser = await this.userService.create(createUserDto);
-
-
-      // TODO: LOGIN USER AND RESPONSE WITH THE TOKEN BESIDE USER-DTO 
-
+      await this.userService.create(createUserDto);
+      const { user, token } = await this.userService.signin(createUserDto);
       this.apiRes = {
         //TODO: DEVELOP STATIC MESSAGES
         status_message: "user created successfully!",
-        res_data: newUser
+        res_data: user
       }
-      res.status(201).json(this.apiRes);
-    } catch (err) {
-      // TODO: MODIFY ERROR HANDELING
+      res.status(HttpStatus.CREATED).cookie('token', token).json(this.apiRes);
+    } catch (err: any) {
+      // TODO: DEVELOP CENTRAL ERROR HANDELING
       this.apiRes = {
-        status_message: "Internal Server Error",
+        status_message: err.message,
       }
-      res.status(500).json(this.apiRes);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(this.apiRes);
     }
     
+  }
+
+
+  @Post('/signin')
+  async signin(
+    @Body() loginUserDTO: LoginUserDto,
+    //TODO: INFO
+    @Res({ passthrough: true }) res: Response,
+    ) {
+      try {
+        const { user, token } = await this.userService.signin(loginUserDTO);
+        this.apiRes = {
+          status_message: "user logged successfully",
+          res_data: user
+        }
+        res.status(HttpStatus.OK).cookie('token', token).json(this.apiRes);
+      } catch (err: any) {
+      // TODO: DEVELOP CENTRAL ERROR HANDELING
+      this.apiRes = {
+        status_message: err.message,
+      }
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(this.apiRes);
+    }
   }
 
 
