@@ -33,7 +33,11 @@ This system will support basic functionalities such as registering users, creati
     DB_PASSWORD = 
     DB_HOST = 
     DB_PORT =   
-    DB_TIMEOUT = 
+    DB_TIMEOUT =
+    SALT_ROUNDS = 
+    JWT_TOKEN_SECRET = 
+    JWT_EXPIRATION = 
+    SERVER_PORT =  
 
 
 ##### If you watn to consider running postgres DB on a docker container, run the following comand; otherwise, set the .env variables to your local PG engine.
