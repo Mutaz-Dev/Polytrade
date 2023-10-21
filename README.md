@@ -28,12 +28,12 @@ This system will support basic functionalities such as registering users, creati
 ## Environment Variables
 #### Create .env file with the following environment variables:
 ###
-  DB_NAME = 
-  DB_USERNAME = 
-  DB_PASSWORD = 
-  DB_HOST = 
-  DB_PORT =   
-  DB_TIMEOUT = 
+    DB_NAME = 
+    DB_USERNAME = 
+    DB_PASSWORD = 
+    DB_HOST = 
+    DB_PORT =   
+    DB_TIMEOUT = 
 
 
 ##### If you watn to consider running postgres DB on a docker container, run the following comand; otherwise, set the .env variables to your local PG engine.
