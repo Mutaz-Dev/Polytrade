@@ -6,7 +6,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Serialize } from '@src/interceptors/serializer.interceptor';
 import { UserDto } from './dto/user.dto';
 import { APIResponse } from '@src/shared/interfaces/api.respone';
-import { STATUS_CODES } from 'http';
 
 @Controller('user')
 export class UserController {
