@@ -31,8 +31,10 @@ export class User extends BaseEntity {
     
     @BeforeInsert()
     async hashPassword() {
-        const saltRound: number = this.configService.get<number>('SALT_ROUNDS');
-        const salt = await bcrypt.genSalt(saltRound);
+        // TODO: CHECK ENVIRONMENT VARIABLES PARSING 
+        // console.log(this.configService.get<number>('SALT_ROUNDS'))
+        // const saltRound: number = this.configService.get<number>('SALT_ROUNDS');
+        const salt = await bcrypt.genSalt(10);
         const hashedPassword = await Promise.resolve(bcrypt.hashSync(this.password, salt));
         this.password = hashedPassword;
     }
