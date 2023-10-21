@@ -3,11 +3,16 @@ import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UserModule } from './user/user.module';
+import { User } from './user/entities/user.entity';
+import { Role } from './user/entities/role.entity';
 
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       imports: [ConfigModule],
@@ -24,12 +29,13 @@ import { AppService } from './app.service';
           port: config.get<number>('DB_PORT'),
           ssl: false,
           connectTimeoutMS: config.get<number>('DB_TIMEOUT'),
-          entities: [],
+          entities: [Role, User],
           //TODO: disable DB syncronization
           synchronize: true,
         };
       }
-    })
+    }),
+    UserModule
     ],
   controllers: [AppController],
   providers: [AppService],
