@@ -4,6 +4,7 @@ import { BaseEntity } from "@src/shared/base.entity";
 import { Role } from "./role.entity";
 import { AppConfig } from "@src/app.config";
 import { UserRelation } from "./user-relation.entity";
+import { Like } from "@src/post/entities/like.entity";
 
 
 @Entity({name:"user"})
@@ -27,6 +28,15 @@ export class User extends BaseEntity {
 
     @ManyToOne(() => Role, (role) => role.users)
     role: Role;
+
+    @OneToMany(() => UserRelation, (userRelation) => userRelation.sourceId)
+    userRelationSource: UserRelation[];
+
+    @OneToMany(() => UserRelation, (userRelation) => userRelation.targetId)
+    userRelationTarget: UserRelation[];
+
+    @OneToMany(() => Like, (like) => like.user)
+    likes: Like[];
     
     @BeforeInsert()
     async hashPassword() {
@@ -36,6 +46,4 @@ export class User extends BaseEntity {
         const hashedPassword = await Promise.resolve(bcrypt.hashSync(this.password, salt));
         this.password = hashedPassword;
     }
-
-
 }

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Relation, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { CreateUserDto } from './dto/user.dto';
 import { Role } from './entities/role.entity';
 import { RolesEnum } from '@src/shared/constants/roles';
 import { LoginUserDto } from './dto/login.dto';
@@ -210,33 +210,11 @@ export class UserService {
   }
 
 
-  async getRelations(userId: number): Promise<UserRelation[]> {
+  async findUserRelations(userId: number): Promise<UserRelation[]> {
     return await this.userRelationRepo.createQueryBuilder('user_relation')
     .select()
-    .where("source_id = :sourceId", { sourceId: userId })
-    .orWhere("target_id = :targetId", { targetId: userId })
+    .where("user_relation.source_id = :sourceId", { sourceId: userId })
+    .orWhere("user_relation.target_id = :targetId", { targetId: userId })
     .execute();
-  }
-
-
-
-
-
-
-
-
-
-
-
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

@@ -51,6 +51,3 @@ export class UserIdDto {
   @IsNumber()
   id: number;
 }
-
-
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
