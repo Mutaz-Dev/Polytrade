@@ -14,7 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { IUser } from './interfaces/user.interface';
 import { UserRelation } from './entities/user-relation.entity';
 import { IRelation } from './interfaces/relation.interface';
-import { AddRelationDto } from './dto/add-relation.dto';
+import { AddRelationDto } from './dto/relation.dto';
 import { RelationStatus } from '@src/shared/enums';
 
 
@@ -66,6 +66,7 @@ export class UserService {
     let newUser: User = await this.userRepo.save(user);
 
     return {
+      id: newUser.id,
       username : newUser.username,
       fullName : newUser.firstName + " " + newUser.lastName,
       email :newUser.email,
@@ -75,10 +76,10 @@ export class UserService {
 
 
   async signin(dto: LoginUserDto | CreateUserDto): Promise<ISignIn> {
-
     let user: User = await this.validateUser(dto.password, dto.username, dto.email);
+    
     if (!user) throw new BadRequestException('Invalid Credentials');
-
+  
     const payload: IUserFromRequest = {
       id: user.id,
       role:user.role.name
@@ -87,6 +88,7 @@ export class UserService {
 
     return {
       user: {
+        id: user.id,
         username: user.username,
         email: user.email,
         fullName: user.firstName + " " + user.lastName,
@@ -117,12 +119,22 @@ export class UserService {
     return user;
   }
 
+  async findOneById(id: number): Promise<User> {
+    const user: User = await this.userRepo.findOne({
+      where: [
+        { id: id }
+      ],
+      relations: ['role'],
+    });
+    return user;
+  }
+
 
   async addRelation(addRelationDto: AddRelationDto): Promise<IRelation> {
-    let sourceUser: User = await this.findOne(addRelationDto.sourceUsername)
-    let targetUser: User = await this.findOne(addRelationDto.targetUsername)
+    let sourceUser: User = await this.findOneById(addRelationDto.sourceId)
+    let targetUser: User = await this.findOneById(addRelationDto.targetId)
     if (!targetUser) 
-      throw new BadRequestException(`user with username: ${addRelationDto.targetUsername} is not found`);;
+      throw new BadRequestException(`user with id: ${addRelationDto.targetId} is not found`);;
 
     let relation: UserRelation = await this.findRelation(sourceUser.id, targetUser.id)
     if(relation){
@@ -161,6 +173,11 @@ export class UserService {
       ],
     })
     return relation
+  }
+
+
+  async acceptRelation() {
+    
   }
 
   findAll() {

@@ -1,9 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { User } from './entities/user.entity';
 
 describe('UserController', () => {
   let controller: UserController;
+  let service : UserService;
+  let userRepo: User
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
