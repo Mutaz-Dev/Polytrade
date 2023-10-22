@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Res, Patch, Param, Delete, HttpStatus } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Controller, Get, Post, Body, Res, Patch, Param, Delete, HttpStatus, Put } from '@nestjs/common';
+import { Response } from 'express';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Serialize } from '@src/interceptors/serializer.interceptor';
 import { IAPIResponse } from '@src/shared/interfaces/api.respone';
 import { LoginUserDto } from './dto/login.dto';
+import { AddRelationDto } from './dto/add-relation.dto';
+import { IRelation } from './interfaces/relation.interface';
 
 
 
@@ -20,16 +22,22 @@ export class UserController {
     try {
       await this.userService.create(createUserDto);
       const { user, token } = await this.userService.signin(createUserDto);
+      console.log(user, token)
       this.apiRes = {
         //TODO: DEVELOP STATIC MESSAGES
         status_message: "user created successfully!",
         res_data: user
       }
       res.status(HttpStatus.CREATED).cookie('token', token).json(this.apiRes);
-    } catch (err: any) {
+    } catch(err: any) {
+
+      if (err instanceof Error) {
+        err = err.message;
+      }
+
       // TODO: DEVELOP CENTRAL ERROR HANDELING
       this.apiRes = {
-        status_message: err.message,
+        status_message: err,
       }
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(this.apiRes);
     }
@@ -52,12 +60,47 @@ export class UserController {
         res.status(HttpStatus.OK).cookie('token', token).json(this.apiRes);
       } catch (err: any) {
       // TODO: DEVELOP CENTRAL ERROR HANDELING
+      if (err instanceof Error) {
+        err = err.message;
+      }
+
       this.apiRes = {
-        status_message: err.message,
+        status_message: err,
       }
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(this.apiRes);
     }
   }
+
+
+  @Post('/relation')
+  // TODO: ADD AUTHINTICATION
+  // @Auth()
+  async addRelation(
+    @Body() addRelationDto: AddRelationDto,
+    @Res() res: Response,
+    ) {
+      try {
+        const relation: IRelation = await this.userService.addRelation(addRelationDto);
+        console.log(relation)
+        this.apiRes = {
+          status_message: "relation request sent succesfully",
+          res_data: relation
+        }
+        res.status(HttpStatus.CREATED).json(this.apiRes);
+      } catch(err: any){
+        
+        if (err instanceof Error) {
+          err = err.message;
+        }
+
+        this.apiRes = {
+          status_message: err,
+        }
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(this.apiRes);
+      }
+  }
+
+
 
 
   @Get()
@@ -65,10 +108,10 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.userService.findOne(+id);
+  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

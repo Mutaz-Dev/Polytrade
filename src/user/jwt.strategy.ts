@@ -9,7 +9,6 @@ import { Request as RequestType } from 'express';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(config: ConfigService) {
     super({
-      //   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       jwtFromRequest: ExtractJwt.fromExtractors([
         JwtStrategy.extractJwtFromCookie,
         ExtractJwt.fromAuthHeaderAsBearerToken(),

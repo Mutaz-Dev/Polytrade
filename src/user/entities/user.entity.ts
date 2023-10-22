@@ -1,13 +1,12 @@
-import { BeforeInsert, Column, Entity, ManyToOne } from "typeorm";
+import { BeforeInsert, Column, Entity, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { BaseEntity } from "@src/shared/base.entity";
 import { Role } from "./role.entity";
 import { AppConfig } from "@src/app.config";
+import { UserRelation } from "./user-relation.entity";
 
 
-
-
-@Entity({name:"users"})
+@Entity({name:"user"})
 export class User extends BaseEntity {
     
     
@@ -29,6 +28,11 @@ export class User extends BaseEntity {
     @ManyToOne(() => Role, (role) => role.users)
     role: Role;
 
+    // @OneToMany(() => UserRelation, (userRelation) => userRelation.sourceID, {eager: true})
+    // sourceID: UserRelation;
+
+    // @OneToMany(() => UserRelation, (userRelation) => userRelation.targetID, {eager: true})
+    // targetID: UserRelation;
     
     @BeforeInsert()
     async hashPassword() {

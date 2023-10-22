@@ -7,6 +7,7 @@ import { AppConfig } from './app.config';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { Role } from './user/entities/role.entity';
+import { UserRelation } from './user/entities/user-relation.entity';
 
 
 @Module({
@@ -30,7 +31,7 @@ import { Role } from './user/entities/role.entity';
           port: config.get<number>('DB_PORT'),
           ssl: false,
           connectTimeoutMS: config.get<number>('DB_TIMEOUT'),
-          entities: [Role, User],
+          entities: [Role, User, UserRelation],
           //TODO: disable DB syncronization
           synchronize: true,
         };

@@ -10,6 +10,7 @@
 // }
 
 
+// TODO: CREATE A DYNAMIC RESPONSE
 export interface IAPIResponse {
     status_message: string;
     res_data?: any;
