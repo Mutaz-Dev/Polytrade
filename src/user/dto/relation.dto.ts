@@ -1,19 +1,16 @@
-import { IsString } from "@nestjs/class-validator";
+import { IsNumber } from "@nestjs/class-validator";
 
 export class AddRelationDto {
 
-    @IsString()
+    @IsNumber()
     sourceId: number;
 
-    @IsString()
+    @IsNumber()
     targetId: number;
 }
 
 
 export class AcceptRelationDto {
-    @IsString()
+    @IsNumber()
     id: number;
-
-    @IsString()
-    targetId: number;
 }

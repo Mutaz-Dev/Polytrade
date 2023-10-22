@@ -14,7 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { IUser } from './interfaces/user.interface';
 import { UserRelation } from './entities/user-relation.entity';
 import { IRelation } from './interfaces/relation.interface';
-import { AddRelationDto } from './dto/relation.dto';
+import { AddRelationDto, AcceptRelationDto } from './dto/relation.dto';
 import { RelationStatus } from '@src/shared/enums';
 
 
@@ -76,7 +76,7 @@ export class UserService {
 
 
   async signin(dto: LoginUserDto | CreateUserDto): Promise<ISignIn> {
-    let user: User = await this.validateUser(dto.password, dto.username, dto.email);
+    let user: User = await this.validateUser(dto.password, dto.email);
     
     if (!user) throw new BadRequestException('Invalid Credentials');
   
@@ -84,6 +84,7 @@ export class UserService {
       id: user.id,
       role:user.role.name
     }
+    
     const token: string =  this.jwtService.sign(payload);
 
     return {
@@ -99,8 +100,8 @@ export class UserService {
   }
 
 
-  async validateUser(password: string, username?: string, email?: string) {
-    const user: User = await this.findOne(username, email);
+  async validateUser(password: string, email: string) {
+    const user: User = await this.findOne(email);
 
     if (!user) return null;
     if (!bcrypt.compareSync(password, user.password)) return null;
@@ -108,12 +109,9 @@ export class UserService {
   }
 
 
-  async findOne(username?: string, email?: string): Promise<User> {
+  async findOne(email: string): Promise<User> {
     const user: User = await this.userRepo.findOne({
-      where: [
-        { username: username },
-        { email: email },
-      ],
+      where: { email: email },
       relations: ['role'],
     });
     return user;
@@ -136,7 +134,7 @@ export class UserService {
     if (!targetUser) 
       throw new BadRequestException(`user with id: ${addRelationDto.targetId} is not found`);;
 
-    let relation: UserRelation = await this.findRelation(sourceUser.id, targetUser.id)
+    let relation: UserRelation = await this.findRelationBySourceAndTarget(sourceUser.id, targetUser.id)
     if(relation){
       if (relation.status == RelationStatus.ACTIVE)
         throw new BadRequestException(`the relation is already existed`);
@@ -166,7 +164,17 @@ export class UserService {
   }
 
 
-  async findRelation(sourceId: number, targetId: number): Promise<UserRelation> {
+  async findRelation(id: number): Promise<UserRelation> {
+    const relation = await this.userRelationRepo.findOne({
+      where: [
+        { id : id}
+      ],
+    })
+    return relation
+  }
+
+
+  async findRelationBySourceAndTarget(sourceId: number, targetId: number): Promise<UserRelation> {
     const relation = await this.userRelationRepo.findOne({
       where: [
         { sourceId : sourceId, targetId : targetId }
@@ -176,9 +184,43 @@ export class UserService {
   }
 
 
-  async acceptRelation() {
-    
+  async acceptRelation(acceptRelationDto: AcceptRelationDto): Promise<IRelation> {
+    let relation = await this.findRelation(acceptRelationDto.id)
+    if (!relation)
+      throw new BadRequestException(`the relation is not existed`);
+    if (relation.status != RelationStatus.REQUESTED)
+      throw new BadRequestException(`the relation status should be requested`);
+      await this.updateRelationStatus(relation.id, RelationStatus.ACTIVE);
+      relation = await this.findRelation(acceptRelationDto.id);
+
+    return {
+      id: relation.id,
+      targetId: relation.targetId,
+      sourceId: relation.sourceId,
+      createdAt: relation.created_at,
+      updatedAt: relation.updated_at,
+      status: relation.status,
+    }
   }
+
+
+  async updateRelationStatus(id: number, status: RelationStatus) {
+    return await this.userRelationRepo.createQueryBuilder('user_relation')
+    .update(UserRelation)
+    .set({ status: status })
+    .where("id = :id", { id: id })
+    .execute();
+  }
+
+
+
+
+
+
+
+
+
+
 
   findAll() {
     return `This action returns all user`;
