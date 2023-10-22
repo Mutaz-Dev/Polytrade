@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { Role } from './user/entities/role.entity';
 import { UserRelation } from './user/entities/user-relation.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 
 @Module({
@@ -36,6 +37,18 @@ import { UserRelation } from './user/entities/user-relation.entity';
           synchronize: true,
         };
       }
+    }),
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => {
+        return {
+          secret: config.get<string>('JWT_TOKEN_SECRET'),
+          signOptions: {
+            expiresIn: config.get<string>('JWT_EXPIRATION'),
+          },
+        };
+      },
     }),
     UserModule
     ],

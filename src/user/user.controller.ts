@@ -8,6 +8,8 @@ import { IAPIResponse } from '@src/shared/interfaces/api.respone';
 import { LoginUserDto } from './dto/login.dto';
 import { AddRelationDto } from './dto/add-relation.dto';
 import { IRelation } from './interfaces/relation.interface';
+import { Auth } from './decorators/auth.decorator';
+import { RolesEnum } from '@src/shared/constants/roles';
 
 
 
@@ -73,8 +75,7 @@ export class UserController {
 
 
   @Post('/relation')
-  // TODO: ADD AUTHINTICATION
-  // @Auth()
+  @Auth(RolesEnum.USER)
   async addRelation(
     @Body() addRelationDto: AddRelationDto,
     @Res() res: Response,
@@ -101,7 +102,31 @@ export class UserController {
   }
 
 
+  @Patch('/relation')
+  // TODO: ADD AUTHINTICATION
+  // @Auth()
+  async acceptRelation(
+    @Body() addRelationDto: AddRelationDto,
+    @Res() res: Response,
+    ) {
+      try {
+        const relation: IRelation = await this.userService.addRelation(addRelationDto);
+        this.apiRes = {
+          status_message: "relation request sent succesfully",
+          res_data: relation
+        }
+      } catch(err: any){
+        
+        if (err instanceof Error) {
+          err = err.message;
+        }
 
+        this.apiRes = {
+          status_message: err,
+        }
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(this.apiRes);
+      }
+  }
 
   @Get()
   findAll() {
