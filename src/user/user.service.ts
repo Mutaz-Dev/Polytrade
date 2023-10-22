@@ -2,8 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Relation, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { Role } from './entities/role.entity';
 import { RolesEnum } from '@src/shared/constants/roles';
 import { LoginUserDto } from './dto/login.dto';
@@ -132,7 +131,7 @@ export class UserService {
     let sourceUser: User = await this.findOneById(addRelationDto.sourceId)
     let targetUser: User = await this.findOneById(addRelationDto.targetId)
     if (!targetUser) 
-      throw new BadRequestException(`user with id: ${addRelationDto.targetId} is not found`);;
+      throw new BadRequestException(`user with id: ${addRelationDto.targetId} is not found`);
 
     let relation: UserRelation = await this.findRelationBySourceAndTarget(sourceUser.id, targetUser.id)
     if(relation){
@@ -165,22 +164,20 @@ export class UserService {
 
 
   async findRelation(id: number): Promise<UserRelation> {
-    const relation = await this.userRelationRepo.findOne({
+    return await this.userRelationRepo.findOne({
       where: [
         { id : id}
       ],
     })
-    return relation
   }
 
 
   async findRelationBySourceAndTarget(sourceId: number, targetId: number): Promise<UserRelation> {
-    const relation = await this.userRelationRepo.findOne({
+    return await this.userRelationRepo.findOne({
       where: [
         { sourceId : sourceId, targetId : targetId }
       ],
     })
-    return relation
   }
 
 
@@ -209,6 +206,15 @@ export class UserService {
     .update(UserRelation)
     .set({ status: status })
     .where("id = :id", { id: id })
+    .execute();
+  }
+
+
+  async getRelations(userId: number): Promise<UserRelation[]> {
+    return await this.userRelationRepo.createQueryBuilder('user_relation')
+    .select()
+    .where("source_id = :sourceId", { sourceId: userId })
+    .orWhere("target_id = :targetId", { targetId: userId })
     .execute();
   }
 

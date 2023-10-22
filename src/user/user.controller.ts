@@ -1,8 +1,7 @@
 import { Controller, Get, Post, Body, Res, Patch, Param, Delete, HttpStatus, Put, InternalServerErrorException, Req } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto, UserIdDto } from './dto/user.dto';
 import { Serialize } from '@src/interceptors/serializer.interceptor';
 import { IAPIResponse } from '@src/shared/interfaces/api-respone.interface';
 import { LoginUserDto } from './dto/login.dto';
@@ -11,6 +10,8 @@ import { IRelation } from './interfaces/relation.interface';
 import { Auth } from './decorators/auth.decorator';
 import { RolesEnum } from '@src/shared/constants/roles';
 import { apiResponse } from '@src/shared/api-response';
+import { UserDto } from './dto/user.dto';
+import { UserRelation } from './entities/user-relation.entity';
 
 
 
@@ -51,6 +52,15 @@ export class UserController {
   async acceptRelation( @Body() acceptRelationDto: AcceptRelationDto, @Req() req: Request, @Res() res: Response ) {
         const relation: IRelation = await this.userService.acceptRelation(acceptRelationDto);
         this.apiRes = apiResponse("relation request accepted succesfully!", req.url, { ...relation})
+        res.status(HttpStatus.CREATED).json(this.apiRes);
+  }
+
+  @Get('/relation')
+  @Auth(RolesEnum.USER)
+  async getRelations( @Body() userIdDto: UserIdDto, @Req() req: Request, @Res() res: Response ) {
+    console.log(userIdDto);
+        const relation: UserRelation[] = await this.userService.getRelations(userIdDto.id);
+        this.apiRes = apiResponse("user relations requested succesfully!", req.url, { ...relation})
         res.status(HttpStatus.CREATED).json(this.apiRes);
   }
 

@@ -27,12 +27,6 @@ export class User extends BaseEntity {
 
     @ManyToOne(() => Role, (role) => role.users)
     role: Role;
-
-    // @OneToMany(() => UserRelation, (userRelation) => userRelation.sourceID, {eager: true})
-    // sourceID: UserRelation;
-
-    // @OneToMany(() => UserRelation, (userRelation) => userRelation.targetID, {eager: true})
-    // targetID: UserRelation;
     
     @BeforeInsert()
     async hashPassword() {
