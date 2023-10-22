@@ -1,8 +1,11 @@
 {
+  "ts-node": {
+    "require": ["tsconfig-paths/register"],
+   },
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
-    "removeComments": true,
+    "removeComments": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
@@ -16,6 +19,17 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+    "strict": true,
+    "paths": {
+      "*": ["./node_modules/"],
+      "@*": ["./*"],
+    },               
+  },
+  "include": [
+      "./**/*"
+  ],
+  "exclude": [
+      "./dist/**/*"
+  ]
 }
