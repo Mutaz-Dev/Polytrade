@@ -14,6 +14,8 @@ import { Like } from './post/entities/like.entity';
 import { TokenDecoderMiddleware } from './middlewares/token-decoder.middleware';
 import { UserController } from './user/user.controller';
 import { PostController } from './post/post.controller';
+import { typeormConfig } from './configs/typeorm.config';
+import { jwtModuleConfig } from './configs/jwt-module.config';
 
 
 @Module({
@@ -21,40 +23,8 @@ import { PostController } from './post/post.controller';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      imports: [ConfigModule],
-      useFactory: (config: ConfigService) => {
-        const logger = new Logger("InstanceLoader");
-        logger.verbose("connecting to DB")
-
-        return {
-          type: 'postgres',
-          database: config.get<string>('DB_NAME'),
-          username: config.get<string>('DB_USERNAME'),
-          password: config.get<string>('DB_PASSWORD'),
-          host: config.get<string>('DB_HOST'),
-          port: config.get<number>('DB_PORT'),
-          ssl: false,
-          connectTimeoutMS: config.get<number>('DB_TIMEOUT'),
-          entities: [User, UserRelation, Post, Like],
-          //TODO: disable DB syncronization in Production
-          synchronize: true,
-        };
-      }
-    }),
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      imports: [ConfigModule],
-      useFactory: (config: ConfigService) => {
-        return {
-          secret: config.get<string>('JWT_TOKEN_SECRET'),
-          signOptions: {
-            expiresIn: config.get<string>('JWT_EXPIRATION'),
-          },
-        };
-      },
-    }),
+    TypeOrmModule.forRootAsync(typeormConfig),
+    JwtModule.registerAsync(jwtModuleConfig),
     UserModule,
     PostModule
     ],

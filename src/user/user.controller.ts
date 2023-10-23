@@ -24,7 +24,7 @@ export class UserController {
 
   @Post('/signup')
   @Serialize(CreateUserDto)
-  async create(@Body() createUserDto: CreateUserDto, @Req() req: Request, @Res() res: Response) {
+  async create(@Body() createUserDto: CreateUserDto, @Req() req?: Request, @Res() res?: Response) {
     await this.userService.create(createUserDto);
     const { user, token } = await this.userService.signin(createUserDto);
     this.apiRes = apiResponse("user created successfully!", req.url, { token, ...user })
