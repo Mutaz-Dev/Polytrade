@@ -5,13 +5,11 @@ export interface IUser {
       email: string;
       fullName: string;
       registrationDate?: Date;
-      role: string;
 }
 
 
 export interface IUserFromRequest{
       id: number;
-      role: string;
 }
   
   

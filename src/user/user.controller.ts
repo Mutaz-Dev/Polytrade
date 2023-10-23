@@ -8,7 +8,6 @@ import { LoginUserDto } from './dto/login.dto';
 import { AcceptRelationDto, AddRelationDto } from './dto/relation.dto';
 import { IRelation } from './interfaces/relation.interface';
 import { Auth } from './decorators/auth.decorator';
-import { RolesEnum } from '@src/shared/constants/roles';
 import { apiResponse } from '@src/shared/api-response';
 import { UserDto } from './dto/user.dto';
 import { UserRelation } from './entities/user-relation.entity';
@@ -42,9 +41,9 @@ export class UserController {
 
 
   @Post('/relation')
-  @Auth(RolesEnum.USER)
+  @Auth()
   @Serialize(AddRelationDto)
-  async addRelation( @Body() addRelationDto: AddRelationDto, @Req() req: Request, @Res() res: Response ) {      
+  async addRelation( @Body() addRelationDto: AddRelationDto, @Req() req: Request, @Res() res: Response ) {    
     const relation: IRelation = await this.userService.addRelation(addRelationDto);
     this.apiRes = apiResponse("relation request sent succesfully!", req.url, relation)
     res.status(HttpStatus.CREATED).json(this.apiRes);
@@ -52,7 +51,7 @@ export class UserController {
 
 
   @Patch('/relation')
-  @Auth(RolesEnum.USER)
+  @Auth()
   @Serialize(AcceptRelationDto)
   async acceptRelation( @Body() acceptRelationDto: AcceptRelationDto, @Req() req: Request, @Res() res: Response ) {
     const relation: IRelation = await this.userService.acceptRelation(acceptRelationDto);
@@ -62,7 +61,7 @@ export class UserController {
 
 
   @Get('/relation/:id')
-  @Auth(RolesEnum.USER) 
+  @Auth() 
   async findUserRelations( @Param('id') id: string, @Req() req: Request, @Res() res: Response ) {
     const relations: UserRelation[] = await this.userService.findUserRelations(parseInt(id));
     this.apiRes = apiResponse("user relations requested succesfully!", req.url, { ...relations})

@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from '@src/user/jwt.strategy';
 import { Like } from './entities/like.entity';
 import { User } from '@src/user/entities/user.entity';
+import { UserService } from '@src/user/user.service';
 
 @Module({
   imports: [

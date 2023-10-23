@@ -3,7 +3,6 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Role } from './entities/role.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
@@ -11,7 +10,7 @@ import { UserRelation } from './entities/user-relation.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Role, User, UserRelation]),
+    TypeOrmModule.forFeature([User, UserRelation]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       imports: [ConfigModule],

@@ -10,6 +10,7 @@ import { CreateLikeDto } from './dto/like.dto';
 import { IUser } from '@src/user/interfaces/user.interface';
 import { User } from '@src/user/entities/user.entity';
 import { UserIdDto } from '@src/user/dto/user.dto';
+import { UserService } from '../user/user.service';
 
 
 @Injectable()
@@ -49,23 +50,32 @@ export class PostService {
   }
 
 
-  async findOne(ownerId: number, id: number): Promise<IPost> {
+  async findOne(id: number): Promise<IPost> {
     let post =  await this.postRepo.findOne({
-      where: [{ id : id, ownerId : ownerId }],
+      where: [{ id : id }],
     })
 
     if (!post)
-      throw new BadRequestException("post id does not exists!") 
+      throw new BadRequestException("post does not exists!") 
 
     return post;
   }
 
 
   async createLike(createLikeDto: CreateLikeDto): Promise<ILike> {
+    const post: IPost = await this.findOne(createLikeDto.postId)
+
+    if (!post)
+      throw new BadRequestException("post does not exists!")
     const likes: ILike[] = await this.findLike(createLikeDto.postId, createLikeDto.userId);
 
     if (likes.length > 0)
-    throw new BadRequestException("post already liked!")
+      throw new BadRequestException("post already liked!")
+
+    const user: User = await this.userRepo.findOneBy({id: createLikeDto.userId})
+
+    if (!user)
+    throw new BadRequestException("user does not exists!")
 
     const like: Like = this.likeRepo.create({
       post: createLikeDto.postId,
@@ -81,6 +91,7 @@ export class PostService {
     }
   }
 
+
   async findLike(postId: number, userId: number): Promise<ILike[] | any> {
     return await this.likeRepo.createQueryBuilder('like')
     .select()
@@ -89,14 +100,26 @@ export class PostService {
     .execute();
   }
 
+
   async countPostLikes(postId: number): Promise<number | any> {
+    const post = await this.findOne(postId)
+
+    if (!post)
+      throw new BadRequestException("post does not existed!")
+
     return await this.likeRepo.createQueryBuilder('like')
     .select("COUNT(*)")
     .where("like.post = :postId", { postId: postId })
     .execute();
   }
 
+
   async findPostLikers(postId: number): Promise<IUser[] | any> {
+    const post = await this.findOne(postId)
+
+    if (!post)
+      throw new BadRequestException("post does not existed!")
+
     const likersIds : any[] = await this.likeRepo.createQueryBuilder('like')
     .select("like.user")
     .where("like.post = :postId", { postId: postId })

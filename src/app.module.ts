@@ -6,7 +6,6 @@ import { AppService } from './app.service';
 import { AppConfig } from './app.config';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
-import { Role } from './user/entities/role.entity';
 import { UserRelation } from './user/entities/user-relation.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PostModule } from './post/post.module';
@@ -35,7 +34,7 @@ import { Like } from './post/entities/like.entity';
           port: config.get<number>('DB_PORT'),
           ssl: false,
           connectTimeoutMS: config.get<number>('DB_TIMEOUT'),
-          entities: [Role, User, UserRelation, Post, Like],
+          entities: [User, UserRelation, Post, Like],
           //TODO: disable DB syncronization
           synchronize: true,
         };
