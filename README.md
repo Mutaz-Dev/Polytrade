@@ -43,7 +43,7 @@ This system will support basic functionalities such as registering users, creati
 ##### If you watn to run the application using docker, type the following commands
 ###
     $ docker build -t <name-of-the-app> .
-    $ docker run -p 3000:3000 <name-of-the-app>
+    $ docker run -p <>local-port>:<container-port> <name-of-the-app>
 
 
 ## Usage
