@@ -12,7 +12,7 @@ export class TokenDecoderMiddleware implements NestMiddleware {
       let token = (req.headers['x-access-token'] || req.headers['authorization'] )as String;
       token = token.replace(/^Bearer\s+/, "");
       const decodedToken: string = jwt_decode(req.headers.authorization as string);
-      req.headers.decodedToken = decodedToken;
+      req.headers.decodedToken  = decodedToken;
     }
 
     next();

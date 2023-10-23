@@ -11,6 +11,7 @@ import { Auth } from './decorators/auth.decorator';
 import { apiResponse } from '@src/shared/api-response';
 import { UserDto } from './dto/user.dto';
 import { UserRelation } from './entities/user-relation.entity';
+import { parseTokenString } from '@src/utils/token-parser.util';
 
 
 
@@ -34,7 +35,6 @@ export class UserController {
   @Post('/signin')
   @Serialize(LoginUserDto)
   async signin(@Body() loginUserDTO: LoginUserDto, @Req() req: Request, @Res({ passthrough: true }) res: Response) {
-      console.log(req.headers.decodedToken)
       const { user, token } = await this.userService.signin(loginUserDTO);
       this.apiRes = apiResponse("user logged successfully!", req.url, { token, ...user })
       res.status(HttpStatus.OK).cookie('token', token).json(this.apiRes);
