@@ -40,10 +40,10 @@ This system will support basic functionalities such as registering users, creati
     SERVER_PORT =  
 
 
-##### If you watn to consider running postgres DB on a docker container, run the following comand; otherwise, set the .env variables to your local PG engine.
-###### NOTE: Do not forget to match the .env port variables with DB configurations inside the docker-compose.yaml file.
+##### If you watn to run the application using docker, type the following commands
 ###
-    $ docker compose up -d
+    $ docker build -t <name-of-the-app> .
+    $ docker run -p 3000:3000 <name-of-the-app>
 
 
 ## Usage
