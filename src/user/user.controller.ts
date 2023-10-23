@@ -44,8 +44,9 @@ export class UserController {
   @Post('/relation')
   @Auth()
   @Serialize(AddRelationDto)
-  async addRelation( @Body() addRelationDto: AddRelationDto, @Req() req: Request, @Res() res: Response ) {    
-    const relation: IRelation = await this.userService.addRelation(addRelationDto);
+  async addRelation( @Body() addRelationDto: AddRelationDto, @Req() req: Request, @Res() res: Response ) {
+    const parsedToken = parseTokenString(req.headers.decodedToken);  
+    const relation: IRelation = await this.userService.addRelation(addRelationDto.targetId, parsedToken.id);
     this.apiRes = apiResponse("relation request sent succesfully!", req.url, relation)
     res.status(HttpStatus.CREATED).json(this.apiRes);
   }

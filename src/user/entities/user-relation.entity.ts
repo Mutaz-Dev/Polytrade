@@ -15,7 +15,7 @@ export class UserRelation extends BaseEntity {
     @ManyToOne(() => User, (user) => user.id, {eager: true})
     target: number
 
-    @Column({name:"type"})
+    @Column({name:"status"})
     status: RelationStatus;
 
 }

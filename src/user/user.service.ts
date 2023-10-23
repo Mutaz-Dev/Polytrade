@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -39,7 +39,7 @@ export class UserService {
       throw new BadRequestException('user already registered');
     }
 
-    user = this.userRepo.create({
+    let newUser: User = this.userRepo.create({
       username: createUserDto.username,
       password: createUserDto.password,
       email: createUserDto.email,
@@ -48,7 +48,7 @@ export class UserService {
     });
 
 
-    let newUser: User = await this.userRepo.save(user);
+    newUser = await this.userRepo.save(newUser);
 
     return {
       id: newUser.id,
@@ -99,39 +99,46 @@ export class UserService {
   }
 
   async findOneById(id: number): Promise<User> {
-    const user: User = await this.userRepo.findOneBy({
-          id
+    const user: User = await this.userRepo.findOne({
+          where: {id: id},
        })
     return user;
   }
 
 
-  async addRelation(addRelationDto: AddRelationDto): Promise<IRelation> {
-    let sourceUser: User = await this.findOneById(addRelationDto.sourceId)
-    let targetUser: User = await this.findOneById(addRelationDto.targetId)
+  async addRelation(targetId: number, userId: number): Promise<IRelation> {
+    if (userId == targetId)
+      throw new BadRequestException("user cannot sent request to himself")
+
+    let sourceUser: User = await this.findOneById(userId);
+    let targetUser: User = await this.findOneById(targetId);
 
     if (!targetUser) 
-      throw new BadRequestException(`user with id: ${addRelationDto.targetId} is not found`);
+      throw new BadRequestException(`user with id: ${targetId} is not found`);
 
-    let relation: UserRelation = await this.findRelationBySourceAndTarget(sourceUser.id, targetUser.id)
-    if(relation){
-      if (relation.status == RelationStatus.ACTIVE)
+    let relations: UserRelation[] = await this.findRelationBySourceAndTarget(sourceUser.id, targetUser.id)
+    if(relations.length > 2) {
+      throw new InternalServerErrorException('contact admin, db data inconsistency')
+    }
+
+    if(relations.length > 0) {
+      if (relations[0].status == RelationStatus.ACTIVE)
         throw new BadRequestException(`the relation is already existed`);
       
-      if (relation.status == RelationStatus.REQUESTED)
+      if (relations[0].status == RelationStatus.REQUESTED)
         throw new BadRequestException(`the relation request is already sent`);
 
-      if (relation.status == RelationStatus.BLOCKED)
+      if (relations[0].status == RelationStatus.BLOCKED)
         throw new BadRequestException(`the user is blocked by ${targetUser.username}`);
     }
 
-    relation = this.userRelationRepo.create({
+    let newRelation: UserRelation = this.userRelationRepo.create({
       source : sourceUser.id,
       target : targetUser.id,
       status: RelationStatus.REQUESTED
     });
     
-    let newRelation: UserRelation = await this.userRelationRepo.save(relation);
+    newRelation = await this.userRelationRepo.save(newRelation);
 
     return {
       id: newRelation.id,
@@ -152,9 +159,9 @@ export class UserService {
   }
 
 
-  async findRelationBySourceAndTarget(sourceId: number, targetId: number): Promise<UserRelation> {
+  async findRelationBySourceAndTarget(sourceId: number, targetId: number): Promise<UserRelation[]> {
     return await this.userRelationRepo.createQueryBuilder('user_relation')
-      .select()
+      .select("id, status as status")
       .where("user_relation.sourceId = :sourceId", { sourceId: sourceId })
       .orWhere("user_relation.targetId = :targetId", { targetId: targetId })
       .execute();
