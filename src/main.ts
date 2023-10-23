@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { SERVER_PORT } from './configs/config';
+import { SERVER_PORT } from './configs/env.config';
 import { UnauthorizedAuthFilter } from './filters/auth.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './filters/internal.filter';
