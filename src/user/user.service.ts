@@ -107,7 +107,6 @@ export class UserService {
 
 
   async addRelation(addRelationDto: AddRelationDto): Promise<IRelation> {
-    console.log(addRelationDto)
     let sourceUser: User = await this.findOneById(addRelationDto.sourceId)
     let targetUser: User = await this.findOneById(addRelationDto.targetId)
 

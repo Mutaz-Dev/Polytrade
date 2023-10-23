@@ -1,5 +1,5 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Module, Logger } from '@nestjs/common';
+import { Module, Logger, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -11,6 +11,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { PostModule } from './post/post.module';
 import { Post } from './post/entities/post.entity'
 import { Like } from './post/entities/like.entity';
+import { TokenDecoderMiddleware } from './middlewares/token-decoder.middleware';
+import { UserController } from './user/user.controller';
+import { PostController } from './post/post.controller';
 
 
 @Module({
@@ -35,7 +38,7 @@ import { Like } from './post/entities/like.entity';
           ssl: false,
           connectTimeoutMS: config.get<number>('DB_TIMEOUT'),
           entities: [User, UserRelation, Post, Like],
-          //TODO: disable DB syncronization
+          //TODO: disable DB syncronization in Production
           synchronize: true,
         };
       }
@@ -58,4 +61,10 @@ import { Like } from './post/entities/like.entity';
   controllers: [AppController],
   providers: [AppService, AppConfig],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(TokenDecoderMiddleware)
+      .forRoutes(UserController, PostController);
+  }
+}

@@ -6,8 +6,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './filters/internal.filter';
 
 
-
-
 async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
