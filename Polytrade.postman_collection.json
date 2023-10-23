@@ -1,0 +1,336 @@
+{
+	"info": {
+		"_postman_id": "f527a9c1-4f07-4ac4-8500-0354420a1c35",
+		"name": "Polytrade",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9228583",
+		"_collection_link": "https://lively-shuttle-99039.postman.co/workspace/Decapolis~5ecd8a2a-1c42-45e2-af80-cef975f379d2/collection/9228583-f527a9c1-4f07-4ac4-8500-0354420a1c35?action=share&source=collection_link&creator=9228583"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"m1\",\n    \"firstName\" : \"mutaz\",\n    \"lastName\" : \"m\",\n    \"email\" : \"m1@m.com\",\n    \"password\" : \"12345678\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhost}}/user/signup",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign-In",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"m1@m.com\",\n    \"password\": \"12345678\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhost}}/user/signin",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"user",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Request Friend",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjk4MDQxODc0LCJleHAiOjE2OTg5MDU4NzR9.9vmXVZp3eX_9-CSCNpSEbU3GN05w4TEn2xm7cu001Rg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"sourceId\": 1,\n    \"targetId\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhost}}/user/relation",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"user",
+						"relation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accept New Friend Request",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6IlVTRVIiLCJpYXQiOjE2OTc5ODM3MzgsImV4cCI6MTY5ODg0NzczOH0.Xsbq-UBabTmWwe59ckhkHAOSxsg5nVTRdGylw86-7hs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\" : 4\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhost}}/user/relation",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"user",
+						"relation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Friends",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6IlVTRVIiLCJpYXQiOjE2OTc5ODY2NzQsImV4cCI6MTY5ODg1MDY3NH0.r5u3A1oQGcTPCWPRHhkycU7gLJafLquSDG0VtB9W2bc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/user/relation/1",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"user",
+						"relation",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE2OTc5OTgxMzIsImV4cCI6MTY5ODg2MjEzMn0.IOEm6LZZfbmujkx87DiN5VXcHZ9vJINS1WLfZvQXBMs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ownerId\": 2,\n    \"title\": \"Post 4 title\",\n    \"context\": \"Post 4 context\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhost}}/post",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"post"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Posts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE2OTgwMDExMDEsImV4cCI6MTY5ODg2NTEwMX0.1DKQSTb0_BYmgsjHGqL5j5rgQ6s-xp8vgnJMRavTU3I",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/post/2",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"post",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Post",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/post/2/1",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"post",
+						"2",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Like",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE2OTgwMDExMDEsImV4cCI6MTY5ODg2NTEwMX0.1DKQSTb0_BYmgsjHGqL5j5rgQ6s-xp8vgnJMRavTU3I",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"postId\": 1,\n    \"userId\": 2\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{localhost}}/post/like",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"post",
+						"like"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Likes Count",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6IlVTRVIiLCJpYXQiOjE2OTgwMDExMDEsImV4cCI6MTY5ODg2NTEwMX0.1DKQSTb0_BYmgsjHGqL5j5rgQ6s-xp8vgnJMRavTU3I",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/post/likes/3",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"post",
+						"likes",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Likers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{localhost}}/post/likers/3",
+					"host": [
+						"{{localhost}}"
+					],
+					"path": [
+						"post",
+						"likers",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
