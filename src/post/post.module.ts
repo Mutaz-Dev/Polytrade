@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
+import { PostService } from './post.service';
+import { PostController } from './post.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { Post } from './entities/post.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './jwt.strategy';
-import { UserRelation } from './entities/user-relation.entity';
+import { JwtStrategy } from '@src/user/jwt.strategy';
+import { Like } from './entities/like.entity';
+import { User } from '@src/user/entities/user.entity';
+import { UserService } from '@src/user/user.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserRelation]),
+    TypeOrmModule.forFeature([Post, Like, User]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       imports: [ConfigModule],
@@ -24,7 +26,7 @@ import { UserRelation } from './entities/user-relation.entity';
       },
     }),
   ],
-  controllers: [UserController],
-  providers: [UserService, JwtStrategy],
+  controllers: [PostController],
+  providers: [PostService, JwtStrategy],
 })
-export class UserModule {}
+export class PostModule {}

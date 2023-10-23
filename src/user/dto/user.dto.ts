@@ -1,6 +1,4 @@
-import { Expose, Type } from 'class-transformer';
-import { RoleDto } from './role.dto';
-import { PartialType } from '@nestjs/mapped-types';
+import { Expose } from 'class-transformer';
 import { IsString, MinLength, IsEmail, IsNumber, IsDate } from "@nestjs/class-validator";
 
 
@@ -21,9 +19,6 @@ export class UserDto {
   @IsDate()
   registrationDate: Date;
 
-  @Expose()
-  @Type(() => RoleDto)
-  role: RoleDto;
 }
 
 
@@ -51,6 +46,3 @@ export class UserIdDto {
   @IsNumber()
   id: number;
 }
-
-
-export class UpdateUserDto extends PartialType(CreateUserDto) {}

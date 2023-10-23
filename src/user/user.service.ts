@@ -1,10 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Relation, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
-import { Role } from './entities/role.entity';
-import { RolesEnum } from '@src/shared/constants/roles';
+import { CreateUserDto } from './dto/user.dto';
+
 import { LoginUserDto } from './dto/login.dto';
 import { ISignIn } from '@src/user/interfaces/signin.interface';
 import * as bcrypt from 'bcrypt';
@@ -14,7 +13,8 @@ import { IUser } from './interfaces/user.interface';
 import { UserRelation } from './entities/user-relation.entity';
 import { IRelation } from './interfaces/relation.interface';
 import { AddRelationDto, AcceptRelationDto } from './dto/relation.dto';
-import { RelationStatus } from '@src/shared/enums';
+import { RelationStatus } from '@src/shared/constants/enums';
+
 
 
 
@@ -23,7 +23,6 @@ export class UserService {
 
   constructor(
     @InjectRepository(User) private userRepo: Repository<User>,
-    @InjectRepository(Role) private roleRepo: Repository<Role>,
     @InjectRepository(UserRelation) private userRelationRepo: Repository<UserRelation>,
     private readonly jwtService:JwtService,
   ) {}
@@ -40,27 +39,14 @@ export class UserService {
       throw new BadRequestException('user already registered');
     }
 
-    const role: Role = await this.roleRepo.findOne({
-      where: { name: RolesEnum.USER },
-    });
-    
-    if (role == null) {
-      throw new InternalServerErrorException(
-        `Role ${RolesEnum.USER} not found`,
-      );
-    }
-
     user = this.userRepo.create({
       username: createUserDto.username,
       password: createUserDto.password,
       email: createUserDto.email,
       firstName: createUserDto.firstName,
       lastName: createUserDto.lastName,
-      // TODO: COMPLETE USER ROLE ENUM INSERTION
-      // role: RolesEnum.USER 
     });
 
-    user.role = role;
 
     let newUser: User = await this.userRepo.save(user);
 
@@ -69,7 +55,6 @@ export class UserService {
       username : newUser.username,
       fullName : newUser.firstName + " " + newUser.lastName,
       email :newUser.email,
-      role : newUser.role.name,
     };
   }
 
@@ -81,7 +66,6 @@ export class UserService {
   
     const payload: IUserFromRequest = {
       id: user.id,
-      role:user.role.name
     }
     
     const token: string =  this.jwtService.sign(payload);
@@ -92,7 +76,6 @@ export class UserService {
         username: user.username,
         email: user.email,
         fullName: user.firstName + " " + user.lastName,
-        role: user.role.name
       },
       token
     };
@@ -100,7 +83,7 @@ export class UserService {
 
 
   async validateUser(password: string, email: string) {
-    const user: User = await this.findOne(email);
+    const user: User = await this.findOneByEmail(email);
 
     if (!user) return null;
     if (!bcrypt.compareSync(password, user.password)) return null;
@@ -108,28 +91,26 @@ export class UserService {
   }
 
 
-  async findOne(email: string): Promise<User> {
+  async findOneByEmail(email: string): Promise<User> {
     const user: User = await this.userRepo.findOne({
       where: { email: email },
-      relations: ['role'],
     });
     return user;
   }
 
   async findOneById(id: number): Promise<User> {
-    const user: User = await this.userRepo.findOne({
-      where: [
-        { id: id }
-      ],
-      relations: ['role'],
-    });
+    const user: User = await this.userRepo.findOneBy({
+          id
+       })
     return user;
   }
 
 
   async addRelation(addRelationDto: AddRelationDto): Promise<IRelation> {
+    console.log(addRelationDto)
     let sourceUser: User = await this.findOneById(addRelationDto.sourceId)
     let targetUser: User = await this.findOneById(addRelationDto.targetId)
+
     if (!targetUser) 
       throw new BadRequestException(`user with id: ${addRelationDto.targetId} is not found`);
 
@@ -146,8 +127,8 @@ export class UserService {
     }
 
     relation = this.userRelationRepo.create({
-      sourceId : sourceUser.id,
-      targetId : targetUser.id,
+      source : sourceUser.id,
+      target : targetUser.id,
       status: RelationStatus.REQUESTED
     });
     
@@ -155,8 +136,8 @@ export class UserService {
 
     return {
       id: newRelation.id,
-      sourceId: newRelation.sourceId,
-      targetId: newRelation.targetId,
+      sourceId: newRelation.source,
+      targetId: newRelation.target,
       createdAt: newRelation.created_at,
       status: newRelation.status
     };
@@ -173,11 +154,11 @@ export class UserService {
 
 
   async findRelationBySourceAndTarget(sourceId: number, targetId: number): Promise<UserRelation> {
-    return await this.userRelationRepo.findOne({
-      where: [
-        { sourceId : sourceId, targetId : targetId }
-      ],
-    })
+    return await this.userRelationRepo.createQueryBuilder('user_relation')
+      .select()
+      .where("user_relation.sourceId = :sourceId", { sourceId: sourceId })
+      .orWhere("user_relation.targetId = :targetId", { targetId: targetId })
+      .execute();
   }
 
 
@@ -192,8 +173,8 @@ export class UserService {
 
     return {
       id: relation.id,
-      targetId: relation.targetId,
-      sourceId: relation.sourceId,
+      targetId: relation.target,
+      sourceId: relation.source,
       createdAt: relation.created_at,
       updatedAt: relation.updated_at,
       status: relation.status,
@@ -210,33 +191,11 @@ export class UserService {
   }
 
 
-  async getRelations(userId: number): Promise<UserRelation[]> {
+  async findUserRelations(userId: number): Promise<UserRelation[]> {
     return await this.userRelationRepo.createQueryBuilder('user_relation')
     .select()
-    .where("source_id = :sourceId", { sourceId: userId })
-    .orWhere("target_id = :targetId", { targetId: userId })
+    .where("user_relation.sourceId = :sourceId", { sourceId: userId })
+    .orWhere("user_relation.targetId = :targetId", { targetId: userId })
     .execute();
-  }
-
-
-
-
-
-
-
-
-
-
-
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

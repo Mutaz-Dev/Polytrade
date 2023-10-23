@@ -17,17 +17,3 @@ export class UnauthorizedAuthFilter implements ExceptionFilter {
     response.status(status).send("Unauthorized Access!");
   }
 }
-
-@Catch(ForbiddenException)
-export class RoleAuthFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-
-    const response = ctx.getResponse<Response>();
-    const status = exception.getStatus();
-
-    response.status(status).send("Forbidden Access!");
-  }
-}
-
-

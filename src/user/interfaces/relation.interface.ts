@@ -1,4 +1,4 @@
-import { RelationStatus } from "@src/shared/enums";
+import { RelationStatus } from "@src/shared/constants/enums";
 
 export interface IRelation {
       id: number;
