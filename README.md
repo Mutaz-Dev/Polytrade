@@ -61,6 +61,9 @@ This system will support basic functionalities such as registering users, creati
     $ npm run start:dev
 </li>
 
+## End to end testing
+
+##### import the following file "Polytrade.postman_collection.json" into postman, and hit the APis
 
 ## Lisence
 #### No lisence.
