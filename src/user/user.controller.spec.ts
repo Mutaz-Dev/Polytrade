@@ -49,21 +49,6 @@ describe('UserController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [UserService, JwtStrategy],
-      // imports: [
-      //   TypeOrmModule.forFeature([User, UserRelation]),
-      //   JwtModule.registerAsync({
-      //     inject: [ConfigService],
-      //     imports: [ConfigModule],
-      //     useFactory: (config: ConfigService) => {
-      //       return {
-      //         secret: config.get<string>('JWT_TOKEN_SECRET'),
-      //         signOptions: {
-      //           expiresIn: config.get<string>('JWT_EXPIRATION'),
-      //         },
-      //       };
-      //     },
-      //   }),
-      // ]
     })
     .overrideProvider(UserService).useValue(mockUserService)
     .overrideProvider(JwtStrategy).useValue(mockJwtStrategy)
