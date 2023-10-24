@@ -23,11 +23,11 @@
     "strict": true,
     "paths": {
       "*": ["./node_modules/"],
-      "@*": ["./*"],
+      "@*": ["src/*"],
     },               
   },
   "include": [
-      "./**/*"
+      "./**/*",
   ],
   "exclude": [
       "./dist/**/*"

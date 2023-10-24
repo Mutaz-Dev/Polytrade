@@ -1,4 +1,4 @@
-import { IUser } from "@src/user/interfaces/user.interface";
+import { IUser } from "../../user/interfaces/user.interface";
 
 export interface ISignIn {
     user: IUser,

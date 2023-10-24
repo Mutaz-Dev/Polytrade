@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany } from "typeorm";
-import { BaseEntity } from "@src/shared/base.entity";
+import { BaseEntity } from "../../shared/base.entity";
 import { Like } from "./like.entity";
 
 @Entity({name:"post"})

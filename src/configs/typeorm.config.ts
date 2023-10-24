@@ -1,10 +1,10 @@
 import { Logger } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModuleAsyncOptions } from "@nestjs/typeorm";
-import { Like } from "@src/post/entities/like.entity";
-import { Post } from "@src/post/entities/post.entity";
-import { UserRelation } from "@src/user/entities/user-relation.entity";
-import { User } from "@src/user/entities/user.entity";
+import { Like } from "../post/entities/like.entity";
+import { Post } from "../post/entities/post.entity";
+import { UserRelation } from "../user/entities/user-relation.entity";
+import { User } from "../user/entities/user.entity";
 
 
 export const typeormConfig: TypeOrmModuleAsyncOptions = {

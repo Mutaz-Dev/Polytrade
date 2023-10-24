@@ -7,10 +7,8 @@ import { In, Repository } from 'typeorm';
 import { ILike } from './interfaces/like.interface';
 import { Like } from './entities/like.entity';
 import { CreateLikeDto } from './dto/like.dto';
-import { IUser } from '@src/user/interfaces/user.interface';
-import { User } from '@src/user/entities/user.entity';
-import { UserIdDto } from '@src/user/dto/user.dto';
-import { UserService } from '../user/user.service';
+import { IUser } from '../user/interfaces/user.interface';
+import { User } from '../user/entities/user.entity';
 
 
 @Injectable()

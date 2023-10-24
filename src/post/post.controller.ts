@@ -2,13 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, HttpStatus
 import { Request, Response } from 'express';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/post.dto';
-import { Serialize } from '@src/interceptors/serializer.interceptor';
-import { Auth } from '@src/user/decorators/auth.decorator';
+import { Serialize } from '../interceptors/serializer.interceptor';
+import { Auth } from '../user/decorators/auth.decorator';
 import { IPost } from './interfaces/post.interface';
-import { apiResponse } from '@src/shared/api-response';
-import { IAPIResponse } from '@src/shared/interfaces/api-respone.interface';
+import { apiResponse } from '../shared/api-response';
+import { IAPIResponse } from '../shared/interfaces/api-respone.interface';
 import { CreateLikeDto } from './dto/like.dto';
-import { IUser } from '@src/user/interfaces/user.interface';
+import { IUser } from '../user/interfaces/user.interface';
 
 
 

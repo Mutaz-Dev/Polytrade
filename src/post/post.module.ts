@@ -5,10 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from '@src/user/jwt.strategy';
+import { JwtStrategy } from '../user/jwt.strategy';
 import { Like } from './entities/like.entity';
-import { User } from '@src/user/entities/user.entity';
-import { UserService } from '@src/user/user.service';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   imports: [

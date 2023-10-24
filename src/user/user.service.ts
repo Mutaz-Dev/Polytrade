@@ -5,15 +5,15 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/user.dto';
 
 import { LoginUserDto } from './dto/login.dto';
-import { ISignIn } from '@src/user/interfaces/signin.interface';
+import { ISignIn } from '../user/interfaces/signin.interface';
 import * as bcrypt from 'bcrypt';
 import { IUserFromRequest } from './interfaces/user.interface';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from './interfaces/user.interface';
 import { UserRelation } from './entities/user-relation.entity';
 import { IRelation } from './interfaces/relation.interface';
-import { AddRelationDto, AcceptRelationDto } from './dto/relation.dto';
-import { RelationStatus } from '@src/shared/constants/enums';
+import { AcceptRelationDto } from './dto/relation.dto';
+import { RelationStatus } from '../shared/constants/enums';
 
 
 

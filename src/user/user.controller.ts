@@ -1,17 +1,16 @@
 import { Controller, Get, Post, Body, Res, Patch, Param, Delete, HttpStatus, Put, InternalServerErrorException, Req } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './user.service';
-import { CreateUserDto, UserIdDto } from './dto/user.dto';
-import { Serialize } from '@src/interceptors/serializer.interceptor';
-import { IAPIResponse } from '@src/shared/interfaces/api-respone.interface';
+import { CreateUserDto } from './dto/user.dto';
+import { Serialize } from '../interceptors/serializer.interceptor';
+import { IAPIResponse } from '../shared/interfaces/api-respone.interface';
 import { LoginUserDto } from './dto/login.dto';
 import { AcceptRelationDto, AddRelationDto } from './dto/relation.dto';
 import { IRelation } from './interfaces/relation.interface';
 import { Auth } from './decorators/auth.decorator';
-import { apiResponse } from '@src/shared/api-response';
-import { UserDto } from './dto/user.dto';
+import { apiResponse } from '../shared/api-response';
 import { UserRelation } from './entities/user-relation.entity';
-import { parseTokenString } from '@src/utils/token-parser.util';
+import { parseTokenString } from '../utils/token-parser.util';
 
 
 
@@ -29,6 +28,12 @@ export class UserController {
     const { user, token } = await this.userService.signin(createUserDto);
     this.apiRes = apiResponse("user created successfully!", req.url, { token, ...user })
     res.status(HttpStatus.CREATED).cookie('token', token).json(this.apiRes);
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      fullName: user.fullName,
+    }
   }
 
 

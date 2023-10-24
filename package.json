@@ -40,6 +40,7 @@
     "typeorm": "^0.3.17"
   },
   "devDependencies": {
+    "@jest-mock/express": "^2.0.2",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.2.7",
@@ -79,6 +80,10 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "verbose": true,
+    "moduleNameMapper": {
+      "^@/(.*)": "<rootDir>/src/$1"
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { IToken } from "@src/shared/interfaces/toke.interface";
+import { IToken } from "../shared/interfaces/toke.interface";
 
 
 export function parseTokenString (token: any): IToken {

@@ -1,7 +1,7 @@
 import { Entity, ManyToOne } from "typeorm";
-import { BaseEntity } from "@src/shared/base.entity";
+import { BaseEntity } from "../../shared/base.entity";
 import { Post } from "./post.entity"
-import { User } from "@src/user/entities/user.entity";
+import { User } from "../../user/entities/user.entity";
 
 @Entity({name:"like"})
 export class Like extends BaseEntity {

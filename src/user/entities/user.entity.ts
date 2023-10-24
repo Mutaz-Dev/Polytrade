@@ -1,10 +1,10 @@
 import { BeforeInsert, Column, Entity, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import * as bcrypt from 'bcrypt';
-import { BaseEntity } from "@src/shared/base.entity";
+import { BaseEntity } from "../../shared/base.entity";
 
-import { AppConfig } from "@src/app.config";
+import { AppConfig } from "../../app.config";
 import { UserRelation } from "./user-relation.entity";
-import { Like } from "@src/post/entities/like.entity";
+import { Like } from "../../post/entities/like.entity";
 
 
 @Entity({name:"user"})
