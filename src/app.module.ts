@@ -25,8 +25,16 @@ import { Like } from './post/entities/like.entity';
         logger.verbose('connecting to DB');
 
         return {
-          type: 'sqlite',
-          database: `db.sqlite`,
+          // type: 'sqlite',
+          // database: `db.sqlite`,
+          type: 'postgres',
+          database: config.get<string>('DB_NAME'),
+          username: config.get<string>('DB_USERNAME'),
+          password: config.get<string>('DB_PASSWORD'),
+          host: config.get<string>('DB_HOST'),
+          port: config.get<number>('DB_PORT'),
+          ssl: false,
+          connectTimeoutMS: config.get<number>('DB_TIMEOUT'),
           entities: [User, UserRelation, Post, Like],
           //TODO: disable DB syncronization
           synchronize: true,
